@@ -10,7 +10,7 @@ public class DrMuelitasApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DrMuelitasApplication.class, args);
-		LOGGER.info("🤩 Dr. Muelitas is running... ");
+		LOGGER.info("🤩 Dr.Muelitas is running... ");
 	}
 
 }

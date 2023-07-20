@@ -4,6 +4,7 @@ import com.clinicaodontologica.DrMuelitas.dto.OdontologoDto;
 import com.clinicaodontologica.DrMuelitas.entity.Odontologo;
 import com.clinicaodontologica.DrMuelitas.exception.ResourceNotFoundException;
 import com.clinicaodontologica.DrMuelitas.service.impl.OdontologoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class OdontologoController {
     }
 
     @PostMapping
-    public ResponseEntity<OdontologoDto> resgistrarOdontologo(@RequestBody Odontologo odontologo){
+    public ResponseEntity<OdontologoDto> resgistrarOdontologo(@Valid @RequestBody Odontologo odontologo){
         OdontologoDto odontologoGuardado = odontologoService.registrarOdontologo(odontologo);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -43,16 +44,16 @@ public class OdontologoController {
     }
 
     @PutMapping
-    public ResponseEntity<OdontologoDto> actualizarOdontologo(@RequestBody Odontologo odontologo) throws ResourceNotFoundException {
+    public ResponseEntity<OdontologoDto> actualizarOdontologo(@RequestBody @Valid  Odontologo odontologo) throws ResourceNotFoundException {
         OdontologoDto odontologoActualizado = odontologoService.actualizarOdontologo(odontologo);
         return ResponseEntity.ok(odontologoActualizado);
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarOdontologo(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<?> eliminarOdontologo(@PathVariable Long id) throws ResourceNotFoundException {
         odontologoService.eliminarOdontologo(id);
-        return ResponseEntity.ok("😠 Odontólogo eliminado con éxito");
+        return ResponseEntity.ok("😉 Odontólogo eliminado con éxito.");
     }
 
 }

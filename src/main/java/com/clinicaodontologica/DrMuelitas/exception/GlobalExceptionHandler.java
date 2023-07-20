@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> procesarResourceNotFoundException(ResourceNotFoundException exception) {
         Map<String, String> mensaje = new HashMap<>();
-        mensaje.put("mansaje", "😬No se pudo encontrar el recurso solicitado: ".concat(exception.getMessage()));
+        mensaje.put("mansaje", "🫤 No se pudo encontrar el recurso solicitado: ".concat(exception.getMessage()));
         return mensaje;
     }
 

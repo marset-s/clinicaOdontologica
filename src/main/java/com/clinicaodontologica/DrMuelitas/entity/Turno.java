@@ -18,12 +18,12 @@ public class Turno {
     @Setter(value = AccessLevel.NONE)
     private Long id;
 
-    @NonNull
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
-    @NonNull
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "odontologo_id", nullable = false)
     private Odontologo odontologo;

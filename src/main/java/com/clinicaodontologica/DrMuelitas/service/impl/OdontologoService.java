@@ -19,19 +19,16 @@ public class OdontologoService implements IOdontologoService {
 
     private final OdontologoRepository odontologoRepository;
 
-    private final ObjectMapper mapper;
 
     @Autowired
-    public OdontologoService(OdontologoRepository odontologoRepository, ObjectMapper mapper) {
+    public OdontologoService(OdontologoRepository odontologoRepository) {
         this.odontologoRepository = odontologoRepository;
-        this.mapper = mapper;
     }
 
     @Override
     public OdontologoDto registrarOdontologo(Odontologo odontologo) {
         Odontologo odontologoParaGuardar = odontologoRepository.save(odontologo);
-        OdontologoDto odontologoConvertido = mapper.convertValue(odontologoParaGuardar, OdontologoDto.class);
-        ;
+        OdontologoDto odontologoConvertido =new OdontologoDto(odontologoParaGuardar);
         LOGGER.info("😉 Se guardó exitosamente tu odontólogo: {}", odontologoConvertido);
         return odontologoConvertido;
     }
@@ -40,7 +37,7 @@ public class OdontologoService implements IOdontologoService {
     public OdontologoDto buscarOdontologoPorId(Long id) throws ResourceNotFoundException {
         Odontologo odontologoEncontrado = odontologoRepository
                 .findById(id).orElseThrow(() -> new ResourceNotFoundException("No encontrado"));
-        OdontologoDto odontologoConvertido = mapper.convertValue(odontologoEncontrado, OdontologoDto.class);
+        OdontologoDto odontologoConvertido = new OdontologoDto(odontologoEncontrado);
         LOGGER.info("🤩 Odontólogo encontrado: {}", odontologoConvertido);
         return odontologoConvertido;
     }
@@ -49,22 +46,23 @@ public class OdontologoService implements IOdontologoService {
     public List<OdontologoDto> listarOdontologos() {
         List<OdontologoDto> odontologos = odontologoRepository.findAll()
                 .stream()
-                .map(cadaOdontologo -> mapper.convertValue(cadaOdontologo, OdontologoDto.class))
+                .map(OdontologoDto::new)
                 .toList();
-        LOGGER.info("👏🏾 Listando todos nuestros odontólogos: {}", odontologos);
+        LOGGER.info("😎 Listando todos nuestros odontólogos: {}", odontologos);
         return odontologos;
     }
 
     @Override
     public OdontologoDto actualizarOdontologo(Odontologo odontologo) throws ResourceNotFoundException {
-        OdontologoDto odontologoEncontrado = buscarOdontologoPorId(odontologo.getId());
-        odontologoEncontrado.setNombre(odontologo.getNombre());
-        odontologoEncontrado.setApellido(odontologo.getApellido());
-        odontologoEncontrado.setMatricula(odontologo.getMatricula());
-
-        registrarOdontologo(mapper.convertValue(odontologoEncontrado, Odontologo.class));
-        LOGGER.warn("🫡 Se actualizado el odontólogo con id {}: {}", odontologoEncontrado.getId(), odontologoEncontrado);
-        return odontologoEncontrado;
+        OdontologoDto odontologoActualizado;
+        if(!odontologoRepository.existsById(odontologo.getId())){
+            LOGGER.warn("😬 No es posible actualizar el odontólogo.");
+            throw new ResourceNotFoundException("😯 El odontólogo no existe en la base de datos");
+        }else {
+            odontologoActualizado = registrarOdontologo(odontologo);
+            LOGGER.warn("😯 Se ha actualizado al odontólogo con Id {}: {}", odontologoActualizado.getId(), odontologoActualizado);
+        }
+        return odontologoActualizado;
     }
 
     @Override
@@ -73,8 +71,8 @@ public class OdontologoService implements IOdontologoService {
             odontologoRepository.deleteById(id);
             LOGGER.warn("🫡 Se ha eliminado el odontólogo");
         } else {
-            LOGGER.warn("El odontólogo con id {}, no existe en la base de datos", id);
-            throw new ResourceNotFoundException(" El odontólogo con id {}, no existe en la base de datos");
+            LOGGER.warn("😯 El odontólogo con id {}, no existe en la base de datos", id);
+            throw new ResourceNotFoundException("😬 El odontólogo con id {}, no existe en la base de datos");
 
         }
     }
