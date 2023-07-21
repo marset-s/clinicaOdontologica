@@ -36,7 +36,7 @@ public class Paciente {
     @NonNull
     private String apellido;
 
-    @Size(min = 8, max = 9, message = "🧐 Tu cédula debe contener.")
+    @Size(min = 8, max = 9, message = "🧐 Tu cédula debe contener entre 8 y 9 caracteres.")
     @NotBlank(message = "😬 El campo de la cédula no puede estar vacío ni ser nulo.")
     @NonNull
     private String cedula;
